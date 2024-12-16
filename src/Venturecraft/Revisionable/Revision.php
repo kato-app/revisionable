@@ -33,7 +33,10 @@ class Revision extends Eloquent
     {
         parent::__construct($attributes);
         if (\Config::has('revisionable.db_connection')) {
-            $this->connection = \Config::get('revisionable.db_connection');
+            if(DB::connection(\Config::get('revisionable.db_connection'))->getDatabaseName())
+            {
+                $this->connection = \Config::get('revisionable.db_connection');
+            }
         }
     }
 

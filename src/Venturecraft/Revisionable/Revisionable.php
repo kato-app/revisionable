@@ -170,7 +170,7 @@ class Revisionable extends Eloquent
 
             if (count($revisions) > 0) {
                 $revision = static::newModel();
-                \DB::connection(\Config::get('revisionable.db_connection') ?? null)->table($revision->getTable())->insert($revisions);
+                $this->insert($revision,$revisions);
             }
         }
     }
@@ -203,7 +203,7 @@ class Revisionable extends Eloquent
             );
 
             $revision = static::newModel();
-            \DB::connection(\Config::get('revisionable.db_connection') ?? null)->table($revision->getTable())->insert($revisions);
+            $this->insert($revision,$revisions);
         }
     }
 
@@ -226,7 +226,7 @@ class Revisionable extends Eloquent
                 'updated_at' => new \DateTime(),
             );
             $revision = static::newModel();
-            \DB::connection(\Config::get('revisionable.db_connection') ?? null)->table($revision->getTable())->insert($revisions);
+            $this->insert($revision,$revisions);
         }
     }
 
@@ -256,7 +256,7 @@ class Revisionable extends Eloquent
             );
 
             $revision = Revisionable::newModel();
-            \DB::connection(\Config::get('revisionable.db_connection') ?? null)->table($revision->getTable())->insert($revisions);
+            $this->insert($revision,$revisions);
             \Event::dispatch('revisionable.deleted', array('model' => $this, 'revisions' => $revisions));
         }
     }
@@ -433,6 +433,16 @@ class Revisionable extends Eloquent
             $donts[] = $field;
             $this->dontKeepRevisionOf = $donts;
             unset($donts);
+        }
+    }
+
+    private function insertRevisions($revision,$revisions)
+    {
+        $connection = \Config::get('revisionable.db_connection') ?? null;
+        try {
+            \DB::connection($connection)->table($revision->getTable())->insert($revisions);
+        } catch (Exception $e) {
+            \DB::table($revision->getTable())->insert($revisions);
         }
     }
 }

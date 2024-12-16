@@ -32,10 +32,12 @@ class Revision extends Eloquent
     public function __construct(array $attributes = array())
     {
         parent::__construct($attributes);
-        if (\Config::has('revisionable.db_connection')) {
-            if(DB::connection(\Config::get('revisionable.db_connection'))->getDatabaseName())
-            {
+        if (\Config::get('revisionable.db_connection')) {
+            try {
+                \DB::connection(\Config::get('revisionable.db_connection'))->getPdo();
                 $this->connection = \Config::get('revisionable.db_connection');
+            } catch(\Exception $e) {
+                return;
             }
         }
     }

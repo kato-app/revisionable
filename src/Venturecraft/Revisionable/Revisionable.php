@@ -170,7 +170,7 @@ class Revisionable extends Eloquent
 
             if (count($revisions) > 0) {
                 $revision = static::newModel();
-                $this->insert($revision,$revisions);
+                $this->insertRevisions($revision,$revisions);
             }
         }
     }
@@ -203,7 +203,7 @@ class Revisionable extends Eloquent
             );
 
             $revision = static::newModel();
-            $this->insert($revision,$revisions);
+            $this->insertRevisions($revision,$revisions);
         }
     }
 
@@ -226,7 +226,7 @@ class Revisionable extends Eloquent
                 'updated_at' => new \DateTime(),
             );
             $revision = static::newModel();
-            $this->insert($revision,$revisions);
+            $this->insertRevisions($revision,$revisions);
         }
     }
 
@@ -256,7 +256,7 @@ class Revisionable extends Eloquent
             );
 
             $revision = Revisionable::newModel();
-            $this->insert($revision,$revisions);
+            $this->insertRevisions($revision,$revisions);
             \Event::dispatch('revisionable.deleted', array('model' => $this, 'revisions' => $revisions));
         }
     }

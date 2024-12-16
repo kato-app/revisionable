@@ -441,7 +441,7 @@ class Revisionable extends Eloquent
         $connection = \Config::get('revisionable.db_connection') ?? null;
         try {
             \DB::connection($connection)->table($revision->getTable())->insert($revisions);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             \DB::table($revision->getTable())->insert($revisions);
         }
     }

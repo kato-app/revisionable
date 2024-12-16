@@ -438,11 +438,14 @@ class Revisionable extends Eloquent
 
     private function insertRevisions($revision,$revisions)
     {
-        $connection = \Config::get('revisionable.db_connection') ?? null;
-        try {
-            \DB::connection($connection)->table($revision->getTable())->insert($revisions);
-        } catch (Exception $e) {
-            \DB::table($revision->getTable())->insert($revisions);
+        $connection = \Config::get('revisionable.db_connection') ?? null
+        if ($connection) {
+            try {
+                DB::connection(\Config::get('revisionable.db_connection'))->getPdo();
+                $this->connection = \Config::get('revisionable.db_connection');
+            } catch(\Exception $e) {
+                return;
+            }
         }
     }
 }
